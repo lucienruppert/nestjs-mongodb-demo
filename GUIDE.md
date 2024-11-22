@@ -2,6 +2,10 @@
 
 This is a RESTful API built with NestJS and MongoDB Atlas for managing products.
 
+## Live Demo
+The application is deployed and accessible at:
+https://nestjs-mongodb-demo-production.up.railway.app/
+
 ## Prerequisites
 
 - Node.js (version 18 or higher)
@@ -9,7 +13,17 @@ This is a RESTful API built with NestJS and MongoDB Atlas for managing products.
 
 ## Database
 
-The application is connected to MongoDB Atlas, a cloud-hosted MongoDB service. The connection is already configured in the application, so no additional database setup is required locally.
+The application is connected to MongoDB Atlas, a cloud-hosted MongoDB service. The connection is already configured in the application.
+
+### MongoDB Atlas Configuration
+For the application to work in both development and production (Railway):
+1. Go to MongoDB Atlas dashboard
+2. Navigate to Network Access
+3. Click "Add IP Address"
+4. Click "Allow Access from Anywhere" (adds 0.0.0.0/0)
+5. Click "Confirm"
+
+This configuration is necessary because Railway uses dynamic IP addresses.
 
 ## Installation
 
@@ -25,7 +39,7 @@ npm install --omit=dev
 
 ## Running the Application
 
-The application runs on port 3000.
+The application runs on port 3000 locally.
 
 Development mode with auto-reload:
 ```bash
@@ -37,15 +51,20 @@ Production mode:
 npm run start:prod
 ```
 
-Once started, the API will be available at `http://localhost:3000`
+Once started, the API will be available at:
+- Local: `http://localhost:3000`
+- Production: `https://nestjs-mongodb-demo-production.up.railway.app`
 
 You can verify the server is running by accessing:
-- `http://localhost:3000/products` - Should return a list of products (empty array if no products exist)
+- Local: `http://localhost:3000/products`
+- Production: `https://nestjs-mongodb-demo-production.up.railway.app/products`
+
+Both should return a list of products (empty array if no products exist).
 
 ## API Endpoints
 
 ### Create Product
-- **POST** `http://localhost:3000/products`
+- **POST** `/products`
 - Creates a new product in MongoDB
 - Request body:
 ```json
@@ -63,7 +82,7 @@ You can verify the server is running by accessing:
 ```
 
 ### Get All Products
-- **GET** `http://localhost:3000/products`
+- **GET** `/products`
 - Returns an array of all products from MongoDB
 - Response:
 ```json
@@ -78,7 +97,7 @@ You can verify the server is running by accessing:
 ```
 
 ### Get Single Product
-- **GET** `http://localhost:3000/products/:id`
+- **GET** `/products/:id`
 - Returns a specific product by MongoDB document ID
 - Response:
 ```json
@@ -91,7 +110,7 @@ You can verify the server is running by accessing:
 ```
 
 ### Update Product
-- **PATCH** `http://localhost:3000/products/:id`
+- **PATCH** `/products/:id`
 - Updates an existing product in MongoDB
 - Request body (all fields optional):
 ```json
@@ -103,7 +122,7 @@ You can verify the server is running by accessing:
 ```
 
 ### Delete Product
-- **DELETE** `http://localhost:3000/products/:id`
+- **DELETE** `/products/:id`
 - Deletes a product from MongoDB by ID
 
 ## Data Storage
@@ -119,9 +138,13 @@ All data is stored in MongoDB Atlas with the following schema:
 
 ## Example Usage with cURL
 
+Replace `BASE_URL` with either:
+- Local: `http://localhost:3000`
+- Production: `https://nestjs-mongodb-demo-production.up.railway.app`
+
 ### Create a Product
 ```bash
-curl -X POST http://localhost:3000/products \
+curl -X POST ${BASE_URL}/products \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Test Product",
@@ -132,17 +155,17 @@ curl -X POST http://localhost:3000/products \
 
 ### Get All Products
 ```bash
-curl http://localhost:3000/products
+curl ${BASE_URL}/products
 ```
 
 ### Get Single Product
 ```bash
-curl http://localhost:3000/products/your-product-id
+curl ${BASE_URL}/products/your-product-id
 ```
 
 ### Update Product
 ```bash
-curl -X PATCH http://localhost:3000/products/your-product-id \
+curl -X PATCH ${BASE_URL}/products/your-product-id \
   -H "Content-Type: application/json" \
   -d '{
     "price": 25.99
@@ -151,7 +174,7 @@ curl -X PATCH http://localhost:3000/products/your-product-id \
 
 ### Delete Product
 ```bash
-curl -X DELETE http://localhost:3000/products/your-product-id
+curl -X DELETE ${BASE_URL}/products/your-product-id
 ```
 
 ## Error Handling
@@ -164,11 +187,23 @@ The API includes proper error handling:
 ## Deployment Notes
 
 When deploying to production environments (like Railway):
+
+### MongoDB Atlas Access
+1. Ensure MongoDB Atlas Network Access is configured to allow connections from anywhere (0.0.0.0/0)
+2. This is required because Railway uses dynamic IP addresses
+
+### Railway Configuration
 - Use `npm install --omit=dev` to exclude development dependencies
 - The application includes a postinstall script that automatically runs the build
 - Node.js version 18 or higher is required (specified in package.json)
-- Ensure environment variables are properly set for MongoDB connection
 - The application will use the PORT environment variable if available, defaulting to 3000
+
+### Troubleshooting MongoDB Connection
+If you see the error: "Unable to connect to the database. Retrying..."
+1. Go to MongoDB Atlas dashboard
+2. Check Network Access settings
+3. Ensure 0.0.0.0/0 is in the IP whitelist
+4. Wait a few minutes for the changes to propagate
 
 ## Package.json Configuration
 
