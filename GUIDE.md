@@ -4,7 +4,7 @@ This is a RESTful API built with NestJS and MongoDB Atlas for managing products.
 
 ## Prerequisites
 
-- Node.js
+- Node.js (version 18 or higher)
 - npm or yarn package manager
 
 ## Database
@@ -13,12 +13,19 @@ The application is connected to MongoDB Atlas, a cloud-hosted MongoDB service. T
 
 ## Installation
 
-1. Install dependencies:
+Development setup:
 ```bash
 npm install
 ```
 
+Production setup (excludes dev dependencies):
+```bash
+npm install --omit=dev
+```
+
 ## Running the Application
+
+The application runs on port 3000.
 
 Development mode with auto-reload:
 ```bash
@@ -27,16 +34,18 @@ npm run start:dev
 
 Production mode:
 ```bash
-npm run build
 npm run start:prod
 ```
 
-The API will be available at `http://localhost:3000`
+Once started, the API will be available at `http://localhost:3000`
+
+You can verify the server is running by accessing:
+- `http://localhost:3000/products` - Should return a list of products (empty array if no products exist)
 
 ## API Endpoints
 
 ### Create Product
-- **POST** `/products`
+- **POST** `http://localhost:3000/products`
 - Creates a new product in MongoDB
 - Request body:
 ```json
@@ -54,7 +63,7 @@ The API will be available at `http://localhost:3000`
 ```
 
 ### Get All Products
-- **GET** `/products`
+- **GET** `http://localhost:3000/products`
 - Returns an array of all products from MongoDB
 - Response:
 ```json
@@ -69,7 +78,7 @@ The API will be available at `http://localhost:3000`
 ```
 
 ### Get Single Product
-- **GET** `/products/:id`
+- **GET** `http://localhost:3000/products/:id`
 - Returns a specific product by MongoDB document ID
 - Response:
 ```json
@@ -82,7 +91,7 @@ The API will be available at `http://localhost:3000`
 ```
 
 ### Update Product
-- **PATCH** `/products/:id`
+- **PATCH** `http://localhost:3000/products/:id`
 - Updates an existing product in MongoDB
 - Request body (all fields optional):
 ```json
@@ -94,7 +103,7 @@ The API will be available at `http://localhost:3000`
 ```
 
 ### Delete Product
-- **DELETE** `/products/:id`
+- **DELETE** `http://localhost:3000/products/:id`
 - Deletes a product from MongoDB by ID
 
 ## Data Storage
@@ -151,3 +160,27 @@ The API includes proper error handling:
 - Returns 404 when a product is not found
 - Validates required fields (title, description, price) when creating products
 - Handles invalid MongoDB IDs gracefully
+
+## Deployment Notes
+
+When deploying to production environments (like Railway):
+- Use `npm install --omit=dev` to exclude development dependencies
+- The application includes a postinstall script that automatically runs the build
+- Node.js version 18 or higher is required (specified in package.json)
+- Ensure environment variables are properly set for MongoDB connection
+- The application will use the PORT environment variable if available, defaulting to 3000
+
+## Package.json Configuration
+
+Key configurations in package.json:
+```json
+{
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "postinstall": "npm run build"
+  }
+}
+```
+These ensure proper Node.js version compatibility and automatic build after installation in production environments.
